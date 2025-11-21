@@ -3,7 +3,7 @@ import socket
 HOST = "127.0.0.1"
 PORT = 8080
 
-balance: int = 0
+balance: int = 100
     
 def deposit(amount: int):
     global balance 
