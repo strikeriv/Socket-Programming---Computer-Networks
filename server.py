@@ -24,34 +24,38 @@ def withdraw(amount: int):
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
-    conn, addr = s.accept()
     
-    with conn:
-        print(f"Socket has connected with address: {addr}.")
+    print('Server is running.\n')
+    
+    while True:
+        conn, addr = s.accept()
         
-        while True:
-            message = conn.recv(1024).decode()
-            if not message:
-                break
+        with conn:
+            print(f"\nSocket has connected with address: {addr}.")
             
-            # split message by : to determine command
-            [command, value] = message.split(':')
-            
-            if command == 'deposit':
-                message = deposit(int(value))
-
-                conn.sendall(message.encode())
-            elif command == 'withdraw':
-                message = withdraw(int(value))
-  
-                conn.sendall(message.encode())
-            elif command == 'balance':
-                message = f'good:{balance}'
-
-                conn.sendall(message.encode())  
-            else:
-                conn.sendall('bad:None'.encode()) 
+            while True:
+                message = conn.recv(1024).decode()
+                if not message:
+                    break
                 
-        print(f"Socket with address: {addr} has disconnected.\n")
+                # split message by : to determine command
+                [command, value] = message.split(':')
+                
+                if command == 'deposit':
+                    message = deposit(int(value))
+
+                    conn.sendall(message.encode())
+                elif command == 'withdraw':
+                    message = withdraw(int(value))
+    
+                    conn.sendall(message.encode())
+                elif command == 'balance':
+                    message = f'good:{balance}'
+
+                    conn.sendall(message.encode())  
+                else:
+                    conn.sendall('bad:None'.encode()) 
+                    
+            print(f"Socket has disconnected with address: {addr}.\n")
             
             
